@@ -277,7 +277,7 @@ const AudioManager = {
 
     const audioPath = exercise.audio;
     if (audioPath) {
-      const audio = new Audio(`${audioPath}?v=1.1.0`);
+      const audio = new Audio(audioPath);
       this.currentAudio = audio;
 
       audio.onplay = () => {
@@ -420,7 +420,7 @@ const App = {
   exercises: [],
 
   init() {
-    this.exercises = window.DEFAULT_EXERCISES || [];
+    this.exercises = (typeof DEFAULT_EXERCISES !== 'undefined' ? DEFAULT_EXERCISES : (window.DEFAULT_EXERCISES || []));
     SpeechEngine.initVoices();
     SettingsController.init();
     I18N.applyTranslations();
@@ -1352,7 +1352,8 @@ const App = {
     // เมื่อทำจบครบทุก exercise (หรืออยู่บทสุดท้าย Unit 8) ไม่ต้องมีปุ่ม next unit
     const btnNext = document.getElementById('btnSummaryNext');
     if (btnNext) {
-      if (ex.id >= 8) {
+      const allCompleted = this.exercises.length > 0 && this.exercises.every(e => localStorage.getItem(`nw2_ex_${e.id}_completed`) === 'true');
+      if (ex.id >= 8 || allCompleted) {
         btnNext.style.display = 'none';
       } else {
         btnNext.style.display = 'inline-flex';
